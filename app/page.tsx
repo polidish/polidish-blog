@@ -244,7 +244,7 @@ You are a verified author. Only when you choose to post will you appear publicly
 </>
 ) : (
 <strong>
-You're invited to join the discussion. Please type your email address and select join above, then click the Magic-link inside your email.
+You're invited to join the discussion here and at polidish.com. Please type your email address and select join above, then click the Magic-link inside your email.
 </strong>
 )}
 </div>
