@@ -20,7 +20,7 @@ duration: 30000,
 {
 src: '/peacock.jpeg',
 caption:
-'Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).',
+'Polidish: the Outpost where pensive partners meet High Worth While Individuals (HWWI).',
 duration: 60000,
 },
 ];
@@ -195,7 +195,7 @@ textTransform: 'uppercase',
 fontWeight: 700,
 }}
 >
-THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
+POLIDISH.BLOG: THE BLOG FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
 
@@ -207,7 +207,7 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <AdFrame startIndex={2} />
 
 <div className="outpost-links">
-<a href="https://polidish.blog">POLIDISH.BLOG</a>
+<a href="https://polidish.com">POLIDISH.COM</a>
 <a href="https://polidish.store">POLIDISH.STORE</a>
 </div>
 </aside>
@@ -215,7 +215,7 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <section className="jungle">
 <h2>
 <strong>Politely dishing politics.</strong>{' '}
-<em><strong>May the best mind win.</strong></em>
+<em><strong>May the best mind win. Turnabout is fair play.</strong></em>
 </h2>
 
 {/* SIGN UP */}
@@ -276,7 +276,7 @@ Post
 )}
 
 <div className="jungle-marker">
-<em>The Jungle keeps growing and growing.</em>
+<em>Go to Page 2 for Member Data Privacy Assurances.</em>
 </div>
 
 {vines.map((v) => (
