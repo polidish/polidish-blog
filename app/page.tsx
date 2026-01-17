@@ -276,7 +276,7 @@ Post
 )}
 
 <div className="jungle-marker">
-<em>Go to Page 2 for Member Data Privacy Assurances.</em>
+<em>Member Data Privacy Assurance Policy: Polidish does not sell, share or distribute user identity data to advertisers or third parties. User authentication email is stored securely through a reputable third-party infrastructure provider. Users control their own content. Posts may be created and deleted by the author. Posts are not edited nor altered by Polidish. Content is addressed only as required by law and will be proactively removed in cases of implied child endangerment or credible threats. Political viewpoints about subjects are not moderated, verified, endorsed or censored by Polidish. Nothing on the Polidish LLC website brand is curated.</em>
 </div>
 
 {vines.map((v) => (
