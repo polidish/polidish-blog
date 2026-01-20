@@ -7,373 +7,402 @@ import { supabase } from '../lib/supabaseClient';
 /* ---------------- ADS ---------------- */
 
 const ADS = [
-{
-src: '/pier.jpeg',
-caption: 'Visualize your ad copy right here, to the left, or in the center.',
-duration: 15000,
-},
-{
-src: '/decanter.jpeg',
-caption: 'Advertisements are uncurated for your continued privacy.',
-duration: 30000,
-},
-{
-src: '/peacock.jpeg',
-caption:
-'Polidish: the Outpost where pensive partners meet High Worth While Individuals (HWWI).',
-duration: 60000,
-},
+  {
+    src: '/pier.jpeg',
+    caption: 'Visualize your ad copy right here, to the left, or in the center.',
+    duration: 15000,
+  },
+  {
+    src: '/decanter.jpeg',
+    caption: 'Advertisements are uncurated for your continued privacy.',
+    duration: 30000,
+  },
+  {
+    src: '/peacock.jpeg',
+    caption:
+      'Polidish: the Outpost where pensive partners meet High Worth While Individuals (HWWI).',
+    duration: 60000,
+  },
 ];
 
 function AdFrame({ startIndex }: { startIndex: number }) {
-const [index, setIndex] = useState(startIndex);
-const [visible, setVisible] = useState(true);
+  const [index, setIndex] = useState(startIndex);
+  const [visible, setVisible] = useState(true);
 
-useEffect(() => {
-const hold = ADS[index].duration;
-const transition = 15000;
+  useEffect(() => {
+    const hold = ADS[index].duration;
+    const transition = 15000;
 
-const t1 = setTimeout(() => setVisible(false), hold);
-const t2 = setTimeout(() => {
-setIndex((i) => (i + 1) % ADS.length);
-setVisible(true);
-}, hold + transition);
+    const t1 = setTimeout(() => setVisible(false), hold);
+    const t2 = setTimeout(() => {
+      setIndex((i) => (i + 1) % ADS.length);
+      setVisible(true);
+    }, hold + transition);
 
-return () => {
-clearTimeout(t1);
-clearTimeout(t2);
-};
-}, [index]);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [index]);
 
-return (
-<div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
-<div style={{ opacity: visible ? 1 : 0, transition: 'opacity 15s linear' }}>
-<Image
-src={ADS[index].src}
-alt="Advertisement"
-width={600}
-height={900}
-style={{ width: '100%', height: 'auto' }}
-/>
-<div
-style={{
-position: 'absolute',
-bottom: 16,
-left: 16,
-right: 16,
-color: 'gold',
-fontWeight: 700,
-fontStyle: 'italic',
-fontSize: 14,
-}}
->
-{ADS[index].caption}
-</div>
-</div>
-</div>
-);
+  return (
+    <div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
+      <div style={{ opacity: visible ? 1 : 0, transition: 'opacity 15s linear' }}>
+        <Image
+          src={ADS[index].src}
+          alt="Advertisement"
+          width={600}
+          height={900}
+          style={{ width: '100%', height: 'auto' }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 16,
+            left: 16,
+            right: 16,
+            color: 'gold',
+            fontWeight: 700,
+            fontStyle: 'italic',
+            fontSize: 14,
+          }}
+        >
+          {ADS[index].caption}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 /* ---------------- TYPES ---------------- */
 
 type Vine = {
-id: string;
-content: string | null;
-created_at: string;
-author_display: string;
+  id: string;
+  content: string | null;
+  created_at: string;
+  author_display: string;
 };
 
 /* ---------------- PAGE ---------------- */
 
 export default function Page() {
-const [email, setEmail] = useState('');
-const [sent, setSent] = useState(false);
-const [sending, setSending] = useState(false);
-const [session, setSession] = useState<any>(null);
+  const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [session, setSession] = useState<any>(null);
 
-const [draft, setDraft] = useState('');
-const [vines, setVines] = useState<Vine[]>([]);
-const [posting, setPosting] = useState(false);
+  const [draft, setDraft] = useState('');
+  const [vines, setVines] = useState<Vine[]>([]);
+  const [posting, setPosting] = useState(false);
 
-const verified = !!session;
+  const verified = !!session;
 
-/* ---------------- AUTH ---------------- */
+  /* ---------------- AUTH ---------------- */
 
-useEffect(() => {
-(async () => {
-await supabase.auth.refreshSession();
-const { data } = await supabase.auth.getSession();
-setSession(data.session);
-loadVines();
-})();
+  useEffect(() => {
+    (async () => {
+      try {
+        await supabase.auth.refreshSession();
+        const { data } = await supabase.auth.getSession();
+        console.log('initial session', data);
+        setSession(data.session);
+        loadVines();
+      } catch (err) {
+        console.error('auth refresh/getSession error', err);
+      }
+    })();
 
-const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-setSession(s);
-});
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      console.log('auth state changed', s);
+    });
 
-return () => {
-sub?.subscription.unsubscribe();
-};
-}, []);
+    return () => {
+      sub?.subscription.unsubscribe();
+    };
+  }, []);
 
-/* ---------------- DATA ---------------- */
+  /* ---------------- DATA ---------------- */
 
-async function loadVines() {
-const { data } = await supabase
-.from('vines')
-.select('id, content, created_at, author_display')
-.order('created_at', { ascending: true });
+  async function loadVines() {
+    const { data, error } = await supabase
+      .from('vines')
+      .select('id, content, created_at, author_display')
+      .order('created_at', { ascending: true });
 
-if (data) setVines(data);
-}
+    if (error) {
+      console.error('loadVines error', error);
+    } else {
+      console.log('loadVines data', data?.length ?? 0);
+      if (data) setVines(data);
+    }
+  }
 
-async function handleJoin() {
-if (!email) return;
+  async function handleJoin() {
+    if (!email) return;
 
-setSending(true);
+    setSending(true);
 
-const { error } = await supabase.auth.signInWithOtp({
-email,
-options: { emailRedirectTo: 'https://polidish.com' },
-});
+    try {
+      const redirect = process.env.NEXT_PUBLIC_APP_URL ?? 'https://polidish.com';
+      const resp = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: redirect },
+      });
+      console.log('signInWithOtp response', resp);
+      if (resp.error) {
+        console.error('Magic link error', resp.error);
+      } else {
+        setSent(true);
+      }
+    } catch (err) {
+      console.error('handleJoin exception', err);
+    } finally {
+      setSending(false);
+    }
+  }
 
-if (!error) {
-setSent(true);
-}
+  async function postVine() {
+    if (!verified || !draft.trim()) return;
 
-setSending(false);
-}
+    setPosting(true);
 
-async function postVine() {
-if (!verified || !draft.trim()) return;
+    const display = session.user.email?.slice(0, 5).toLowerCase() + '••';
 
-setPosting(true);
+    try {
+      const { data, error } = await supabase
+        .from('vines')
+        .insert({
+          content: draft.trim(),
+          author_display: display,
+          author_id: session.user.id,
+        })
+        .select();
+      console.log('postVine response', { data, error });
+      if (error) {
+        console.error('Insert error', error);
+      } else {
+        setDraft('');
+        loadVines();
+      }
+    } catch (err) {
+      console.error('postVine exception', err);
+    } finally {
+      setPosting(false);
+    }
+  }
 
-const display =
-session.user.email?.slice(0, 5).toLowerCase() + '••';
+  /* ---------------- RENDER ---------------- */
 
-await supabase.from('vines').insert({
-content: draft.trim(),
-author_display: display,
-author_id: session.user.id,
-});
+  return (
+    <main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
 
-setDraft('');
-setPosting(false);
-loadVines();
-}
+      {/* HEADER */}
+      <header
+        style={{
+          background: 'black',
+          padding: '12px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Image
+          src="/_logo polidish.png"
+          alt="Polidish"
+          width={96}
+          height={96}
+          style={{ width: 48, height: 48 }}
+          priority
+        />
+        <div
+          style={{
+            color: '#d07a3a',
+            fontSize: 'clamp(14px, 1.6vw, 20px)',
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            fontWeight: 700,
+          }}
+        >
+          POLIDISH.BLOG: THE BLOG FOR UNCENSORED POLITICAL DISCOURSE. 18+
+        </div>
+      </header>
 
-/* ---------------- RENDER ---------------- */
+      {/* BODY */}
+      <section className="grid">
+        <aside className="ads">
+          <AdFrame startIndex={0} />
+          <AdFrame startIndex={1} />
+          <AdFrame startIndex={2} />
 
-return (
-<main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
+          <div className="outpost-links">
+            <a href="https://polidish.com">POLIDISH.COM</a>
+            <a href="https://polidish.store">POLIDISH.STORE</a>
+          </div>
+        </aside>
 
-{/* HEADER */}
-<header
-style={{
-background: 'black',
-padding: '12px 24px',
-display: 'flex',
-alignItems: 'center',
-justifyContent: 'space-between',
-}}
->
-<Image
-src="/_logo polidish.png"
-alt="Polidish"
-width={96}
-height={96}
-style={{ width: 48, height: 48 }}
-priority
-/>
-<div
-style={{
-color: '#d07a3a',
-fontSize: 'clamp(14px, 1.6vw, 20px)',
-letterSpacing: '0.05em',
-textTransform: 'uppercase',
-fontWeight: 700,
-}}
->
-POLIDISH.BLOG: THE BLOG FOR UNCENSORED POLITICAL DISCOURSE. 18+
-</div>
-</header>
+        <section className="jungle">
+          <h2>
+            <strong>Politely dishing politics.</strong>{' '}
+            <em><strong>May the best mind win. Turnabout is fair play.</strong></em>
+          </h2>
 
-{/* BODY */}
-<section className="grid">
-<aside className="ads">
-<AdFrame startIndex={0} />
-<AdFrame startIndex={1} />
-<AdFrame startIndex={2} />
+          {/* SIGN UP */}
+          <div className="signup">
+            <input
+              type="email"
+              placeholder="Please enter email for member sign-up"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <button onClick={handleJoin}>
+              {sending ? 'Sending…' : 'Join'}
+            </button>
+          </div>
 
-<div className="outpost-links">
-<a href="https://polidish.com">POLIDISH.COM</a>
-<a href="https://polidish.store">POLIDISH.STORE</a>
-</div>
-</aside>
+          {sent && <div>Magic link sent.</div>}
 
-<section className="jungle">
-<h2>
-<strong>Politely dishing politics.</strong>{' '}
-<em><strong>May the best mind win. Turnabout is fair play.</strong></em>
-</h2>
+          {/* STATUS */}
+          <div className="jungle-rules">
+            {verified ? (
+              <>
+                <strong>
+                  You are a verified author. Only when you choose to post will you appear publicly.
+                </strong>
+                <div>Add your vine below.</div>
+              </>
+            ) : (
+              <strong>
+                You're invited to join the discussion at polidish.com. Please type your email address and select join above, then click the Magic-link inside your email.
+              </strong>
+            )}
+          </div>
 
-{/* SIGN UP */}
-<div className="signup">
-<input
-type="email"
-placeholder="Please enter email for member sign-up"
-value={email}
-onChange={(e) => setEmail(e.target.value)}
-/>
-<button onClick={handleJoin}>
-{sending ? 'Sending…' : 'Join'}
-</button>
-</div>
+          {/* JUNGLE THREAD */}
+          <div className="scroll">
+            {verified && (
+              <>
+                <textarea
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  placeholder="Add your vine…"
+                  rows={18}
+                  style={{
+                    width: '100%',
+                    height: '420px',
+                    padding: '16px',
+                    fontSize: '16px',
+                    lineHeight: '1.6',
+                    marginBottom: 12,
+                    resize: 'vertical',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                <button onClick={postVine} disabled={posting}>
+                  Post
+                </button>
+              </>
+            )}
 
-{sent && <div>Magic link sent.</div>}
+            <div className="jungle-marker">
+              <em>Member Data Privacy Assurance Policy: Polidish does not sell, share or distribute user identity data to advertisers or third parties. User authentication email is stored securely through a reputab[...]
+            </div>
 
-{/* STATUS */}
-<div className="jungle-rules">
-{verified ? (
-<>
-<strong>
-You are a verified author. Only when you choose to post will you appear publicly.
-</strong>
-<div>Add your vine below.</div>
-</>
-) : (
-<strong>
-You're invited to join the discussion at polidish.com. Please type your email address and select join above, then click the Magic-link inside your email.
-</strong>
-)}
-</div>
+            {vines.map((v) => (
+              <div key={v.id} className="vine">
+                <div className="author">{v.author_display}</div>
+                <div className="content">{v.content ?? 'deleted'}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </section>
 
-{/* JUNGLE THREAD */}
-<div className="scroll">
-{verified && (
-<>
-<textarea
-value={draft}
-onChange={(e) => setDraft(e.target.value)}
-placeholder="Add your vine…"
-rows={18}
-style={{
-width: '100%',
-height: '420px',
-padding: '16px',
-fontSize: '16px',
-lineHeight: '1.6',
-marginBottom: 12,
-resize: 'vertical',
-boxSizing: 'border-box',
-}}
-/>
-<button onClick={postVine} disabled={posting}>
-Post
-</button>
-</>
-)}
+      {/* FOOTER */}
+      <footer className="footer">
+        <div>
+          Polidish LLC is not legally responsible for your poor judgment.
+          If you endanger children, threaten terrorism, or break the law, you reveal yourself.
+          Two-Factor Authentication.
+        </div>
+        <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
+      </footer>
 
-<div className="jungle-marker">
-<em>Member Data Privacy Assurance Policy: Polidish does not sell, share or distribute user identity data to advertisers or third parties. User authentication email is stored securely through a reputable third-party infrastructure provider. Users control their own content. Posts may be created and deleted by the author. Posts are not edited nor altered by Polidish. Content is addressed only as required by law and will be proactively removed in cases of implied child endangerment or credible threats. Political viewpoints about subjects are not moderated, verified, endorsed or censored by Polidish. Nothing on the Polidish LLC website brand is curated.</em>
-</div>
-
-{vines.map((v) => (
-<div key={v.id} className="vine">
-<div className="author">{v.author_display}</div>
-<div className="content">{v.content ?? 'deleted'}</div>
-</div>
-))}
-</div>
-</section>
-</section>
-
-{/* FOOTER */}
-<footer className="footer">
-<div>
-Polidish LLC is not legally responsible for your poor judgment.
-If you endanger children, threaten terrorism, or break the law, you reveal yourself.
-Two-Factor Authentication.
-</div>
-<div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
-</footer>
-
-{/* STYLES */}
-<style jsx>{`
-.grid {
-display: grid;
-grid-template-columns: 320px 1fr;
-gap: 24px;
-padding: 24px;
-flex: 1;
-}
-.ads {
-display: flex;
-flex-direction: column;
-gap: 16px;
-}
-.outpost-links {
-display: flex;
-gap: 12px;
-margin-top: 8px;
-}
-.outpost-links a {
-background: black;
-color: gold;
-padding: 8px 12px;
-text-decoration: none;
-font-weight: 700;
-border: 2px solid gold;
-}
-.jungle {
-border: 3px solid black;
-padding: 24px;
-display: flex;
-flex-direction: column;
-background: white;
-}
-.signup {
-display: flex;
-gap: 8px;
-margin: 12px 0;
-}
-.signup input {
-flex: 1;
-padding: 8px;
-}
-.jungle-rules {
-margin: 12px 0;
-padding: 12px;
-border: 1px solid #bbb;
-}
-.scroll {
-border: 1px solid #ddd;
-padding: 12px;
-flex: 1;
-overflow-y: auto;
-}
-.jungle-marker {
-text-align: center;
-margin: 16px 0;
-}
-.vine {
-margin-bottom: 16px;
-}
-.author {
-font-weight: 700;
-}
-.footer {
-padding: 16px 24px;
-font-size: 12px;
-border-top: 2px solid black;
-}
-@media (max-width: 768px) {
-.grid {
-grid-template-columns: 1fr;
-}
-}
-`}</style>
-</main>
-);
+      {/* STYLES */}
+      <style jsx>{`
+        .grid {
+          display: grid;
+          grid-template-columns: 320px 1fr;
+          gap: 24px;
+          padding: 24px;
+          flex: 1;
+        }
+        .ads {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .outpost-links {
+          display: flex;
+          gap: 12px;
+          margin-top: 8px;
+        }
+        .outpost-links a {
+          background: black;
+          color: gold;
+          padding: 8px 12px;
+          text-decoration: none;
+          font-weight: 700;
+          border: 2px solid gold;
+        }
+        .jungle {
+          border: 3px solid black;
+          padding: 24px;
+          display: flex;
+          flex-direction: column;
+          background: white;
+        }
+        .signup {
+          display: flex;
+          gap: 8px;
+          margin: 12px 0;
+        }
+        .signup input {
+          flex: 1;
+          padding: 8px;
+        }
+        .jungle-rules {
+          margin: 12px 0;
+          padding: 12px;
+          border: 1px solid #bbb;
+        }
+        .scroll {
+          border: 1px solid #ddd;
+          padding: 12px;
+          flex: 1;
+          overflow-y: auto;
+        }
+        .jungle-marker {
+          text-align: center;
+          margin: 16px 0;
+        }
+        .vine {
+          margin-bottom: 16px;
+        }
+        .author {
+          font-weight: 700;
+        }
+        .footer {
+          padding: 16px 24px;
+          font-size: 12px;
+          border-top: 2px solid black;
+        }
+        @media (max-width: 768px) {
+          .grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+    </main>
+  );
 }
