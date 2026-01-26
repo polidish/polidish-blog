@@ -227,7 +227,7 @@ value={email}
 onChange={(e) => setEmail(e.target.value)}
 />
 <button onClick={handleJoin}>
-{sending ? 'Sending…' : 'Join'}
+{sending ? "Sending…" : "Join"}
 </button>
 </div>
 
@@ -244,7 +244,7 @@ You are a verified author. Only when you choose to post will you appear publicly
 </>
 ) : (
 <strong>
-You're invited to join the discussion at polidish.com. Please type your email address and select join above, then click the Magic-link inside your email.
+"You are cordially invited to join the discussion at polidish.com. Please type your email address and select join above, then click the Magic-link inside your email."
 </strong>
 )}
 </div>
