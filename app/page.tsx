@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { supabase } from '../lib/supabaseClient';
+import { useEffect, useState } from 'react';
 
 /* ---------------- ADS ---------------- */
 
@@ -74,100 +73,19 @@ fontSize: 14,
 );
 }
 
-/* ---------------- TYPES ---------------- */
-
-type Vine = {
-id: string;
-content: string | null;
-created_at: string;
-author_display: string;
-};
-
 /* ---------------- PAGE ---------------- */
 
 export default function Page() {
-const [email, setEmail] = useState('');
-const [sent, setSent] = useState(false);
-const [sending, setSending] = useState(false);
-const [session, setSession] = useState<any>(null);
-
-const [draft, setDraft] = useState('');
-const [vines, setVines] = useState<Vine[]>([]);
-const [posting, setPosting] = useState(false);
-
-const verified = !!session;
-
-/* ---------------- AUTH ---------------- */
-
-useEffect(() => {
-(async () => {
-await supabase.auth.refreshSession();
-const { data } = await supabase.auth.getSession();
-setSession(data.session);
-loadVines();
-})();
-
-const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-setSession(s);
-});
-
-return () => {
-sub?.subscription.unsubscribe();
-};
-}, []);
-
-/* ---------------- DATA ---------------- */
-
-async function loadVines() {
-const { data } = await supabase
-.from('vines')
-.select('id, content, created_at, author_display')
-.order('created_at', { ascending: true });
-
-if (data) setVines(data);
-}
-
-async function handleJoin() {
-if (!email) return;
-
-setSending(true);
-
-const { error } = await supabase.auth.signInWithOtp({
-email,
-options: { emailRedirectTo: 'https://polidish.com' },
-});
-
-if (!error) {
-setSent(true);
-}
-
-setSending(false);
-}
-
-async function postVine() {
-if (!verified || !draft.trim()) return;
-
-setPosting(true);
-
-const display =
-session.user.email?.slice(0, 5).toLowerCase() + '••';
-
-await supabase.from('vines').insert({
-content: draft.trim(),
-author_display: display,
-author_id: session.user.id,
-});
-
-setDraft('');
-setPosting(false);
-loadVines();
-}
-
-/* ---------------- RENDER ---------------- */
-
 return (
-<main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
-
+<main
+style={{
+fontFamily: 'serif',
+minHeight: '100vh',
+display: 'flex',
+flexDirection: 'column',
+background: 'white',
+}}
+>
 {/* HEADER */}
 <header
 style={{
@@ -195,12 +113,40 @@ textTransform: 'uppercase',
 fontWeight: 700,
 }}
 >
-POLIDISH.BLOG: THE BLOG FOR UNCENSORED POLITICAL DISCOURSE. 18+
+POLIDISH BLOG
 </div>
 </header>
 
 {/* BODY */}
 <section className="grid">
+{/* MAIN CONTENT */}
+<section className="jungle">
+<h2>
+<strong>Politely dishing politics.</strong>{' '}
+<em>
+<strong>May the best mind win. Turnabout is fair play.</strong>
+</em>
+</h2>
+
+<div className="scroll">
+<div className="jungle-marker">
+<em>
+Member Data Privacy Assurance Policy: Polidish does not sell, share
+or distribute user identity data to advertisers or third parties.
+User authentication email is stored securely through a reputable
+third-party infrastructure provider. Users control their own
+content. Posts may be created and deleted by the author. Posts are
+not edited nor altered by Polidish. Content is addressed only as
+required by law and will be proactively removed in cases of
+implied child endangerment or credible threats. Political
+viewpoints are not moderated, verified, endorsed, or censored by
+Polidish. Nothing on the Polidish LLC website brand is curated.
+</em>
+</div>
+</div>
+</section>
+
+{/* OUTPOST (RIGHT SIDE) */}
 <aside className="ads">
 <AdFrame startIndex={0} />
 <AdFrame startIndex={1} />
@@ -211,90 +157,14 @@ POLIDISH.BLOG: THE BLOG FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <a href="https://polidish.store">POLIDISH.STORE</a>
 </div>
 </aside>
-
-<section className="jungle">
-<h2>
-<strong>Politely dishing politics.</strong>{' '}
-<em><strong>May the best mind win. Turnabout is fair play.</strong></em>
-</h2>
-
-{/* SIGN UP */}
-<div className="signup">
-<input
-type="email"
-placeholder="Please enter email for member sign-up"
-value={email}
-onChange={(e) => setEmail(e.target.value)}
-/>
-<button onClick={handleJoin}>
-{sending ? "Sending…" : "Join"}
-</button>
-</div>
-
-{sent && <div>Magic link sent.</div>}
-
-{/* STATUS */}
-<div className="jungle-rules">
-{verified ? (
-<>
-<strong>
-You are a verified author. Only when you choose to post will you appear publicly.
-</strong>
-<div>Add your vine below.</div>
-</>
-) : (
-<strong>
-"You are cordially invited to join the discussion at polidish.com. Please type your email address and select join above, then click the Magic-link inside your email."
-</strong>
-)}
-</div>
-
-{/* JUNGLE THREAD */}
-<div className="scroll">
-{verified && (
-<>
-<textarea
-value={draft}
-onChange={(e) => setDraft(e.target.value)}
-placeholder="Add your vine…"
-rows={18}
-style={{
-width: '100%',
-height: '420px',
-padding: '16px',
-fontSize: '16px',
-lineHeight: '1.6',
-marginBottom: 12,
-resize: 'vertical',
-boxSizing: 'border-box',
-}}
-/>
-<button onClick={postVine} disabled={posting}>
-Post
-</button>
-</>
-)}
-
-<div className="jungle-marker">
-<em>Member Data Privacy Assurance Policy: Polidish does not sell, share or distribute user identity data to advertisers or third parties. User authentication email is stored securely through a reputable third-party infrastructure provider. Users control their own content. Posts may be created and deleted by the author. Posts are not edited nor altered by Polidish. Content is addressed only as required by law and will be proactively removed in cases of implied child endangerment or credible threats. Political viewpoints about subjects are not moderated, verified, endorsed or censored by Polidish. Nothing on the Polidish LLC website brand is curated.</em>
-</div>
-
-{vines.map((v) => (
-<div key={v.id} className="vine">
-<div className="author">{v.author_display}</div>
-<div className="content">{v.content ?? 'deleted'}</div>
-</div>
-))}
-</div>
-</section>
 </section>
 
 {/* FOOTER */}
 <footer className="footer">
 <div>
-Polidish LLC is not legally responsible for your poor judgment.
-If you endanger children, threaten terrorism, or break the law, you reveal yourself.
-Two-Factor Authentication.
+Polidish LLC is not legally responsible for your poor judgment. If you
+endanger children, threaten terrorism, or break the law, you reveal
+yourself. Two-Factor Authentication.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
@@ -303,7 +173,7 @@ Two-Factor Authentication.
 <style jsx>{`
 .grid {
 display: grid;
-grid-template-columns: 320px 1fr;
+grid-template-columns: 1fr 320px;
 gap: 24px;
 padding: 24px;
 flex: 1;
@@ -333,20 +203,6 @@ display: flex;
 flex-direction: column;
 background: white;
 }
-.signup {
-display: flex;
-gap: 8px;
-margin: 12px 0;
-}
-.signup input {
-flex: 1;
-padding: 8px;
-}
-.jungle-rules {
-margin: 12px 0;
-padding: 12px;
-border: 1px solid #bbb;
-}
 .scroll {
 border: 1px solid #ddd;
 padding: 12px;
@@ -356,12 +212,6 @@ overflow-y: auto;
 .jungle-marker {
 text-align: center;
 margin: 16px 0;
-}
-.vine {
-margin-bottom: 16px;
-}
-.author {
-font-weight: 700;
 }
 .footer {
 padding: 16px 24px;
