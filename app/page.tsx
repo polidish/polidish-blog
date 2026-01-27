@@ -122,7 +122,7 @@ POLIDISH BLOG
 {/* MAIN CONTENT */}
 <section className="jungle">
 <h2>
-<strong>Polidish Blogging: Politely dishing politics; extended viewpoints.</strong>{' '}
+<strong>The Polidish Blog   Politely dishing politics.</strong>{' '}
 <em>
 <strong>May the best mind win. Turnabout is fair play.</strong>
 </em>
@@ -131,10 +131,8 @@ POLIDISH BLOG
 <div className="scroll">
 <div className="jungle-marker">
 <em>
-Member Data Privacy Assurance Policy: Polidish does not sell, share
-or distribute user identity data to advertisers or third parties. Political
-viewpoints are not moderated, verified, endorsed, or censored by
-Polidish. Nothing on the Polidish LLC website brand is curated.
+Polidish does not sell, share or distribute user identity data to advertisers or third parties. Political
+viewpoints are not moderated, verified, endorsed, or censored by Polidish LLC. Please submit extended viewpoints to info@polidish.com to be considered for the blog. 
 </em>
 </div>
 </div>
