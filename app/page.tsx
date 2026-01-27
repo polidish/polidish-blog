@@ -12,7 +12,7 @@ caption: 'Visualize your ad copy right here, to the left, or in the center.',
 duration: 15000,
 },
 {
-src: '/decanter.jpeg',
+src: '/6F4D2DEF-FCDA-4F0F-A6EE-A10BEE8542B9.png',
 caption: 'Advertisements are uncurated for your continued privacy.',
 duration: 30000,
 },
