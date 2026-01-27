@@ -17,7 +17,7 @@ caption: 'Advertisements are uncurated for your continued privacy.',
 duration: 30000,
 },
 {
-src: '/peacock.jpeg',
+src: '/19411083-4C77-4DFB-A757-24542717BF90.jpeg',
 caption:
 'Polidish: the Outpost where pensive partners meet High Worth While Individuals (HWWI).',
 duration: 60000,
