@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 const ADS = [
 {
-src: '/pier.jpeg',
+src: '/chessmaster.jpeg',
 caption: 'Visualize your ad copy right here, to the left, or in the center.',
 duration: 15000,
 },
