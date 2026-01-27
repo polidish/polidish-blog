@@ -122,7 +122,7 @@ POLIDISH BLOG
 {/* MAIN CONTENT */}
 <section className="jungle">
 <h2>
-<strong>Politely dishing politics.</strong>{' '}
+<strong>Polidish Blogging: Politely dishing politics; extended viewpoints.</strong>{' '}
 <em>
 <strong>May the best mind win. Turnabout is fair play.</strong>
 </em>
@@ -132,13 +132,7 @@ POLIDISH BLOG
 <div className="jungle-marker">
 <em>
 Member Data Privacy Assurance Policy: Polidish does not sell, share
-or distribute user identity data to advertisers or third parties.
-User authentication email is stored securely through a reputable
-third-party infrastructure provider. Users control their own
-content. Posts may be created and deleted by the author. Posts are
-not edited nor altered by Polidish. Content is addressed only as
-required by law and will be proactively removed in cases of
-implied child endangerment or credible threats. Political
+or distribute user identity data to advertisers or third parties. Political
 viewpoints are not moderated, verified, endorsed, or censored by
 Polidish. Nothing on the Polidish LLC website brand is curated.
 </em>
