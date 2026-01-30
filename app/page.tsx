@@ -1,22 +1,22 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /* ---------------- OUTPOST IMAGE POOLS ---------------- */
 
 // SLOT ONE — TOP
 const SLOT_ONE = [
-'/manhattanbeach.jpeg',
-'/veniceitaly.jpeg',
-'/schuylkill.jpeg',
+'/pier.jpeg',
+'/Venicelightning19.jpeg',
+'/regatta.jpeg',
 ];
 
 // SLOT TWO — MIDDLE
 const SLOT_TWO = [
-'/flowerbutterfly.jpeg',
+'/butterfly.jpeg',
 '/decanter.jpeg',
-'/kayak.jpeg',
+'/KayakDec25.jpeg',
 ];
 
 // SLOT THREE — BOTTOM
@@ -26,34 +26,37 @@ const SLOT_THREE = [
 '/grills.jpeg',
 ];
 
-/* ---------------- OUTPOST SLOT ---------------- */
+/* ---------------- STABLE OUTPOST SLOT ---------------- */
 
 function OutpostSlot({
 images,
 caption,
-interval = 15000,
+interval,
 }: {
 images: string[];
 caption: string;
-interval?: number;
+interval: number;
 }) {
 const [index, setIndex] = useState(0);
+const indexRef = useRef(0);
 
 useEffect(() => {
-const timer = setInterval(() => {
-setIndex((i) => (i + 1) % images.length);
+const id = setInterval(() => {
+indexRef.current = (indexRef.current + 1) % images.length;
+setIndex(indexRef.current);
 }, interval);
 
-return () => clearInterval(timer);
+return () => clearInterval(id);
 }, [images.length, interval]);
 
 return (
 <div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
 <Image
 src={images[index]}
-alt="Advertisement"
+alt="Outpost image"
 width={600}
 height={900}
+priority
 style={{ width: '100%', height: 'auto' }}
 />
 <div
@@ -114,7 +117,7 @@ textTransform: 'uppercase',
 fontWeight: 700,
 }}
 >
-POLIDISH BLOG
+Polidish.blog: The Official POLIDISH Blog
 </div>
 </header>
 
@@ -123,14 +126,14 @@ POLIDISH BLOG
 {/* MAIN CONTENT */}
 <section className="jungle">
 <h2>
-<strong>The Polidish Blog Politely dishing politics.</strong>{' '}
+<strong>The Polidish Blog: Politely Dishing Politics</strong>{' '}
 <em>
 <strong>May the best mind win. Turnabout is fair play.</strong>
 </em>
 </h2>
 
 <div className="scroll">
-{/* jungle content intentionally untouched */}
+{/* Blog content will live here */}
 </div>
 </section>
 
@@ -138,14 +141,17 @@ POLIDISH BLOG
 <aside className="ads">
 <OutpostSlot
 images={SLOT_ONE}
+interval={15000}
 caption="Visualize your ad copy right here, to the left, or in the center."
 />
 <OutpostSlot
 images={SLOT_TWO}
+interval={30000}
 caption="Advertisements are uncurated for your continued privacy."
 />
 <OutpostSlot
 images={SLOT_THREE}
+interval={60000}
 caption="Polidish: the Outpost where pensive partners meet High Worth While Individuals (HWWI)."
 />
 
@@ -160,7 +166,7 @@ caption="Polidish: the Outpost where pensive partners meet High Worth While Indi
 <footer className="footer">
 <div>
 Polidish LLC is not legally responsible for your poor judgment. If you
-endanger children, threaten terrorism, or break the law, you reveal
+endanger children, threaten terrorism or break the law, you reveal
 yourself. Two-Factor Authentication.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
@@ -211,9 +217,14 @@ padding: 16px 24px;
 font-size: 12px;
 border-top: 2px solid black;
 }
+
+/* ✅ MOBILE BLOG HEIGHT FIX */
 @media (max-width: 768px) {
 .grid {
 grid-template-columns: 1fr;
+}
+.scroll {
+min-height: 2in;
 }
 }
 `}</style>
