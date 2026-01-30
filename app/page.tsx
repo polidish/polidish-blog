@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
-/* ---------------- OUTPOST IMAGE POOLS ---------------- */
+/* =========================
+IMAGE SETS (VERBATIM)
+========================= */
 
 // SLOT ONE — TOP
 const SLOT_ONE = [
@@ -26,39 +28,89 @@ const SLOT_THREE = [
 '/grills.jpeg',
 ];
 
-/* ---------------- STABLE OUTPOST SLOT ---------------- */
+/* =========================
+OUTPOST SLOT
+========================= */
 
 function OutpostSlot({
 images,
 caption,
 interval,
+fadeMs = 5000,
 }: {
 images: string[];
 caption: string;
 interval: number;
+fadeMs?: number;
 }) {
-const [index, setIndex] = useState(0);
-const indexRef = useRef(0);
+const [current, setCurrent] = useState(0);
+const [next, setNext] = useState(1);
+const [fading, setFading] = useState(false);
+const currentRef = useRef(0);
 
 useEffect(() => {
-const id = setInterval(() => {
-indexRef.current = (indexRef.current + 1) % images.length;
-setIndex(indexRef.current);
-}, interval);
+if (images.length < 2) return;
 
-return () => clearInterval(id);
-}, [images.length, interval]);
+let tick: number;
+let endFade: number;
+
+const schedule = () => {
+const holdMs = Math.max(0, interval - fadeMs);
+
+tick = window.setTimeout(() => {
+const n = (currentRef.current + 1) % images.length;
+setNext(n);
+setFading(true);
+
+endFade = window.setTimeout(() => {
+currentRef.current = n;
+setCurrent(n);
+setFading(false);
+schedule();
+}, fadeMs);
+}, holdMs);
+};
+
+schedule();
+return () => {
+window.clearTimeout(tick);
+window.clearTimeout(endFade);
+};
+}, [images, interval, fadeMs]);
 
 return (
-<div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
-<Image
-src={images[index]}
-alt="Outpost image"
-width={600}
-height={900}
-priority
-style={{ width: '100%', height: 'auto' }}
+<div style={{ border: '3px solid black', padding: 8, position: 'relative', overflow: 'hidden' }}>
+{/* CURRENT */}
+<img
+src={images[current]}
+alt=""
+draggable={false}
+style={{
+width: '100%',
+height: 'auto',
+display: 'block',
+opacity: fading ? 0 : 1,
+transition: `opacity ${fadeMs}ms linear`,
+}}
 />
+
+{/* NEXT */}
+<img
+src={images[next]}
+alt=""
+draggable={false}
+style={{
+position: 'absolute',
+inset: 8,
+width: 'calc(100% - 16px)',
+height: 'auto',
+opacity: fading ? 1 : 0,
+transition: `opacity ${fadeMs}ms linear`,
+pointerEvents: 'none',
+}}
+/>
+
+{/* CAPTION */}
 <div
 style={{
 position: 'absolute',
@@ -69,6 +121,7 @@ color: 'gold',
 fontWeight: 700,
 fontStyle: 'italic',
 fontSize: 14,
+pointerEvents: 'none',
 }}
 >
 {caption}
@@ -77,7 +130,9 @@ fontSize: 14,
 );
 }
 
-/* ---------------- PAGE ---------------- */
+/* =========================
+PAGE
+========================= */
 
 export default function Page() {
 return (
@@ -117,7 +172,7 @@ textTransform: 'uppercase',
 fontWeight: 700,
 }}
 >
-Polidish.blog: The Official POLIDISH Blog
+POLIDISH BLOG
 </div>
 </header>
 
@@ -126,33 +181,33 @@ Polidish.blog: The Official POLIDISH Blog
 {/* MAIN CONTENT */}
 <section className="jungle">
 <h2>
-<strong>The Polidish Blog: Politely Dishing Politics</strong>{' '}
+<strong>The Polidish Blog: Politely Dishing Politics.</strong>{' '}
 <em>
 <strong>May the best mind win. Turnabout is fair play.</strong>
 </em>
 </h2>
 
-<div className="scroll">
-{/* Blog content will live here */}
-</div>
+<div className="scroll"></div>
 </section>
 
 {/* OUTPOST */}
 <aside className="ads">
 <OutpostSlot
 images={SLOT_ONE}
-interval={15000}
 caption="Visualize your ad copy right here, to the left, or in the center."
+interval={15000}
 />
+
 <OutpostSlot
 images={SLOT_TWO}
-interval={30000}
 caption="Advertisements are uncurated for your continued privacy."
+interval={30000}
 />
+
 <OutpostSlot
 images={SLOT_THREE}
-interval={60000}
 caption="Polidish: the Outpost where pensive partners meet High Worth While Individuals (HWWI)."
+interval={60000}
 />
 
 <div className="outpost-links">
@@ -166,13 +221,15 @@ caption="Polidish: the Outpost where pensive partners meet High Worth While Indi
 <footer className="footer">
 <div>
 Polidish LLC is not legally responsible for your poor judgment. If you
-endanger children, threaten terrorism or break the law, you reveal
+endanger children, threaten terrorism, or break the law, you reveal
 yourself. Two-Factor Authentication.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
 
-{/* STYLES */}
+{/* =========================
+STYLES
+========================= */}
 <style jsx>{`
 .grid {
 display: grid;
@@ -218,7 +275,9 @@ font-size: 12px;
 border-top: 2px solid black;
 }
 
-/* ✅ MOBILE BLOG HEIGHT FIX */
+/* =========================
+MOBILE
+========================= */
 @media (max-width: 768px) {
 .grid {
 grid-template-columns: 1fr;
