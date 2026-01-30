@@ -6,20 +6,54 @@ import { useEffect, useState } from 'react';
 /* ---------------- ADS ---------------- */
 
 const ADS = [
+// PIER — arrival / horizon / stability
 {
-src: '/chessmaster.jpeg',
-caption: 'Visualize your ad copy right here, to the left, or in the center.',
-duration: 15000,
-},
-{
-src: '/6F4D2DEF-FCDA-4F0F-A6EE-A10BEE8542B9.png',
-caption: 'Advertisements are uncurated for your continued privacy.',
+src: '/pier.jpeg',
+caption: 'Arrival establishes footing. Direction before discourse.',
 duration: 30000,
 },
 {
-src: '/19411083-4C77-4DFB-A757-24542717BF90.jpeg',
-caption:
-'Polidish: the Outpost where pensive partners meet High Worth While Individuals (HWWI).',
+src: '/oceansideharbor.jpeg',
+caption: 'Stability precedes exchange.',
+duration: 30000,
+},
+{
+src: '/venicelightning19.jpeg',
+caption: 'Threshold moment. Control retained.',
+duration: 30000,
+},
+
+// DECANTER — craft / refinement / life
+{
+src: '/decanter.jpeg',
+caption: 'Craft is deliberate. Refinement is earned.',
+duration: 45000,
+},
+{
+src: '/butterfly.jpeg',
+caption: 'Life appears when timing is correct.',
+duration: 45000,
+},
+{
+src: '/shell.jpeg',
+caption: 'Material carries time.',
+duration: 45000,
+},
+
+// PEACOCK — performance / status / audience
+{
+src: '/peacock.jpeg',
+caption: 'Performance follows discipline.',
+duration: 60000,
+},
+{
+src: '/risingstarsrighthandcowboy.jpeg',
+caption: 'Analog skill. Earned presence.',
+duration: 60000,
+},
+{
+src: '/regatta.jpeg',
+caption: 'Spectatorship concludes the cycle.',
 duration: 60000,
 },
 ];
@@ -122,7 +156,7 @@ POLIDISH BLOG
 {/* MAIN CONTENT */}
 <section className="jungle">
 <h2>
-<strong>The Polidish Blog   Politely dishing politics.</strong>{' '}
+<strong>The Polidish Blog Politely dishing politics.</strong>{' '}
 <em>
 <strong>May the best mind win. Turnabout is fair play.</strong>
 </em>
@@ -132,7 +166,8 @@ POLIDISH BLOG
 <div className="jungle-marker">
 <em>
 Polidish does not sell, share or distribute user identity data to advertisers or third parties. Political
-viewpoints are not moderated, verified, endorsed, or censored by Polidish LLC. Please submit extended viewpoints to info@polidish.com to be considered for the blog. 
+viewpoints are not moderated, verified, endorsed, or censored by Polidish LLC. Please submit extended
+viewpoints to info@polidish.com to be considered for the blog.
 </em>
 </div>
 </div>
@@ -154,9 +189,8 @@ viewpoints are not moderated, verified, endorsed, or censored by Polidish LLC. P
 {/* FOOTER */}
 <footer className="footer">
 <div>
-Polidish LLC is not legally responsible for your poor judgment. If you
-endanger children, threaten terrorism, or break the law, you reveal
-yourself. Two-Factor Authentication.
+Polidish LLC is not legally responsible for your poor judgment. If you endanger children, threaten terrorism, or
+break the law, you reveal yourself. Two-Factor Authentication.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
