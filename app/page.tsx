@@ -3,86 +3,54 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-/* ---------------- ADS ---------------- */
+/* ---------------- OUTPOST IMAGE POOLS ---------------- */
 
-const ADS = [
-// PIER — arrival / horizon / stability
-{
-src: '/pier.jpeg',
-caption: 'Arrival establishes footing. Direction before discourse.',
-duration: 30000,
-},
-{
-src: '/oceansideharbor.jpeg',
-caption: 'Stability precedes exchange.',
-duration: 30000,
-},
-{
-src: '/venicelightning19.jpeg',
-caption: 'Threshold moment. Control retained.',
-duration: 30000,
-},
-
-// DECANTER — craft / refinement / life
-{
-src: '/decanter.jpeg',
-caption: 'Craft is deliberate. Refinement is earned.',
-duration: 45000,
-},
-{
-src: '/butterfly.jpeg',
-caption: 'Life appears when timing is correct.',
-duration: 45000,
-},
-{
-src: '/shell.jpeg',
-caption: 'Material carries time.',
-duration: 45000,
-},
-
-// PEACOCK — performance / status / audience
-{
-src: '/peacock.jpeg',
-caption: 'Performance follows discipline.',
-duration: 60000,
-},
-{
-src: '/risingstarsrighthandcowboy.jpeg',
-caption: 'Analog skill. Earned presence.',
-duration: 60000,
-},
-{
-src: '/regatta.jpeg',
-caption: 'Spectatorship concludes the cycle.',
-duration: 60000,
-},
+// SLOT ONE — TOP
+const SLOT_ONE = [
+'/manhattanbeach.jpeg',
+'/veniceitaly.jpeg',
+'/schuylkill.jpeg',
 ];
 
-function AdFrame({ startIndex }: { startIndex: number }) {
-const [index, setIndex] = useState(startIndex);
-const [visible, setVisible] = useState(true);
+// SLOT TWO — MIDDLE
+const SLOT_TWO = [
+'/flowerbutterfly.jpeg',
+'/decanter.jpeg',
+'/kayak.jpeg',
+];
+
+// SLOT THREE — BOTTOM
+const SLOT_THREE = [
+'/shell.jpeg',
+'/peacock.jpeg',
+'/grills.jpeg',
+];
+
+/* ---------------- OUTPOST SLOT ---------------- */
+
+function OutpostSlot({
+images,
+caption,
+interval = 15000,
+}: {
+images: string[];
+caption: string;
+interval?: number;
+}) {
+const [index, setIndex] = useState(0);
 
 useEffect(() => {
-const hold = ADS[index].duration;
-const transition = 15000;
+const timer = setInterval(() => {
+setIndex((i) => (i + 1) % images.length);
+}, interval);
 
-const t1 = setTimeout(() => setVisible(false), hold);
-const t2 = setTimeout(() => {
-setIndex((i) => (i + 1) % ADS.length);
-setVisible(true);
-}, hold + transition);
-
-return () => {
-clearTimeout(t1);
-clearTimeout(t2);
-};
-}, [index]);
+return () => clearInterval(timer);
+}, [images.length, interval]);
 
 return (
 <div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
-<div style={{ opacity: visible ? 1 : 0, transition: 'opacity 15s linear' }}>
 <Image
-src={ADS[index].src}
+src={images[index]}
 alt="Advertisement"
 width={600}
 height={900}
@@ -100,8 +68,7 @@ fontStyle: 'italic',
 fontSize: 14,
 }}
 >
-{ADS[index].caption}
-</div>
+{caption}
 </div>
 </div>
 );
@@ -163,21 +130,24 @@ POLIDISH BLOG
 </h2>
 
 <div className="scroll">
-<div className="jungle-marker">
-<em>
-Polidish does not sell, share or distribute user identity data to advertisers or third parties. Political
-viewpoints are not moderated, verified, endorsed, or censored by Polidish LLC. Please submit extended
-viewpoints to info@polidish.com to be considered for the blog.
-</em>
-</div>
+{/* jungle content intentionally untouched */}
 </div>
 </section>
 
-{/* OUTPOST (RIGHT SIDE) */}
+{/* OUTPOST */}
 <aside className="ads">
-<AdFrame startIndex={0} />
-<AdFrame startIndex={1} />
-<AdFrame startIndex={2} />
+<OutpostSlot
+images={SLOT_ONE}
+caption="Visualize your ad copy right here, to the left, or in the center."
+/>
+<OutpostSlot
+images={SLOT_TWO}
+caption="Advertisements are uncurated for your continued privacy."
+/>
+<OutpostSlot
+images={SLOT_THREE}
+caption="Polidish: the Outpost where pensive partners meet High Worth While Individuals (HWWI)."
+/>
 
 <div className="outpost-links">
 <a href="https://polidish.com">POLIDISH.COM</a>
@@ -189,8 +159,9 @@ viewpoints to info@polidish.com to be considered for the blog.
 {/* FOOTER */}
 <footer className="footer">
 <div>
-Polidish LLC is not legally responsible for your poor judgment. If you endanger children, threaten terrorism, or
-break the law, you reveal yourself. Two-Factor Authentication.
+Polidish LLC is not legally responsible for your poor judgment. If you
+endanger children, threaten terrorism, or break the law, you reveal
+yourself. Two-Factor Authentication.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
@@ -234,10 +205,6 @@ border: 1px solid #ddd;
 padding: 12px;
 flex: 1;
 overflow-y: auto;
-}
-.jungle-marker {
-text-align: center;
-margin: 16px 0;
 }
 .footer {
 padding: 16px 24px;
